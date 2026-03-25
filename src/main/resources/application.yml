@@ -1,0 +1,44 @@
+server:
+  port: 8080
+
+spring:
+  profiles:
+    active: dev
+  datasource:
+    # SQLite 本地开发；切换 PostgreSQL 时替换这三行：
+    #   driver-class-name: org.postgresql.Driver
+    #   url: jdbc:postgresql://localhost:5432/today_learn
+    #   username/password: 按需填写
+    driver-class-name: org.sqlite.JDBC
+    url: jdbc:sqlite:${DB_PATH:./data/today_learn.db}
+    hikari:
+      maximum-pool-size: 1          # SQLite 不支持并发写，连接池设为 1
+      connection-init-sql: "PRAGMA foreign_keys = ON; PRAGMA journal_mode = WAL;"
+  jackson:
+    naming-strategy: com.fasterxml.jackson.databind.PropertyNamingStrategies$SnakeCaseStrategy
+    time-zone: Asia/Shanghai
+    date-format: yyyy-MM-dd HH:mm:ss
+
+mybatis-plus:
+  mapper-locations: classpath:mapper/*.xml
+  configuration:
+    map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  global-config:
+    db-config:
+      logic-delete-field: deleted
+      logic-delete-value: 1
+      logic-not-delete-value: 0
+
+app:
+  jwt:
+    secret: ${JWT_SECRET:your-secret-key-at-least-32-characters-long}
+    expiration: 604800  # 7天，单位秒
+  ai:
+    default-model: deepseek-chat
+    claude:
+      api-key: ${CLAUDE_API_KEY:}
+      api-url: https://api.anthropic.com/v1/messages
+    deepseek:
+      api-key: ${DEEPSEEK_API_KEY:}
+      api-url: https://api.deepseek.com/v1/chat/completions

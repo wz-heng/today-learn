@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.learn.today.archive.mapper.ArchiveMapper">
+
+    <!--
+        查询已完成的计划行，聚合任务总数和已完成数
+        SQLite 用 CAST(SUM(...) AS INTEGER) 确保返回整型
+    -->
+    <select id="selectArchivedPlanRows"
+            resultType="com.learn.today.archive.entity.dto.ArchivePlanRow">
+        SELECT
+            dp.id                                                   AS planId,
+            dp.plan_date                                            AS planDate,
+            dp.available_minutes                                    AS availableMinutes,
+            CAST(COUNT(t.id) AS INTEGER)                            AS totalTasks,
+            CAST(SUM(CASE WHEN t.status = 'completed' THEN 1 ELSE 0 END) AS INTEGER) AS completedTasks
+        FROM daily_plans dp
+        LEFT JOIN tasks t ON t.plan_id = dp.id
+        WHERE dp.user_id = #{userId}
+          AND dp.status  = 'completed'
+        GROUP BY dp.id, dp.plan_date, dp.available_minutes
+        ORDER BY dp.plan_date DESC
+        LIMIT #{limit} OFFSET #{offset}
+    </select>
+
+</mapper>
