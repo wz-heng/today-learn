@@ -120,6 +120,11 @@ onMounted(() => {
 </template>
 
 <style scoped>
+@media (max-width: 768px) {
+  .archive-view { padding: 12px; }
+  .stats-row { grid-template-columns: repeat(2, 1fr); }
+  .archive-header { flex-direction: column; align-items: flex-start; }
+}
 .archive-view {
   padding: 24px;
   max-width: 800px;

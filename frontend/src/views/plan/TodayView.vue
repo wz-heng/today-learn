@@ -236,6 +236,13 @@ onMounted(loadData)
   position: relative;
   min-height: calc(100vh - 48px);
 }
+@media (max-width: 768px) {
+  .today-view { padding: 12px; }
+  .plan-header { flex-direction: column; gap: 12px; padding: 14px 16px; }
+  .task-header { flex-direction: column; align-items: flex-start; }
+  .task-badges { flex-wrap: wrap; }
+  .fab { bottom: 80px; right: 16px; }
+}
 .empty-state {
   display: flex;
   align-items: center;
